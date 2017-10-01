@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Intent;
+import android.widget.EditText;
+import android.annotation.SuppressLint;
+import android.support.v4.app.NavUtils;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -24,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.SENSOR_NAME";
 
     ListView listView ;
     SensorManager sensorManager ;
@@ -61,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get the selected item text from ListView
                 String selectedItem = (String) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(view.getContext(), SensorActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, selectedItem);
+                startActivity(intent);
 
                 // Display the selected item text on TextView
                 System.out.println("Nigguh" + selectedItem);
