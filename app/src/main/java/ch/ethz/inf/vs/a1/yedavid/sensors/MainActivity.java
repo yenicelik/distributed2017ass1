@@ -55,15 +55,15 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
-        listView.setOnClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView parent, View view, int position, long id) {
-                        System.out.println("Hey nigguh");
-                    }
-                }
-
-        );
+//        listView.setOnClickListener(
+//                new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView parent, View view, int position, long id) {
+//                        System.out.println("Hey nigguh");
+//                    }
+//                }
+//
+//        );
 
     }
 
