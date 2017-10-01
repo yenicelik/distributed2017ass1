@@ -55,15 +55,17 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
-//        listView.setOnClickListener(
-//                new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView parent, View view, int position, long id) {
-//                        System.out.println("Hey nigguh");
-//                    }
-//                }
-//
-//        );
+        // Set an item click listener for ListView
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the selected item text from ListView
+                String selectedItem = (String) parent.getItemAtPosition(position);
+
+                // Display the selected item text on TextView
+                System.out.println("Nigguh" + selectedItem);
+            }
+        });
 
     }
 
