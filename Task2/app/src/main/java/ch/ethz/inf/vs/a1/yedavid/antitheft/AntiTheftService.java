@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.app.NotificationCompat;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -44,7 +45,15 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         System.out.println("\n\nStarting from within nigguh!");
 
 
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context
+                .NOTIFICATION_SERVICE);
 
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_info_black_24dp)
+                .setContentTitle("I am a notification")
+                .setContentText("Above is a notification");
+
+        notificationManager.notify(1000, notificationBuilder.build());
 
 
     }
