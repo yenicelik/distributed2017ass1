@@ -51,10 +51,10 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_info_black_24dp)
                 .setContentTitle("I am a notification")
-                .setContentText("Above is a notification");
+                .setContentText("Above is a notification")
+                .setOngoing(true);
 
         notificationManager.notify(1000, notificationBuilder.build());
-
 
     }
 
