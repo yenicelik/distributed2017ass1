@@ -1,8 +1,11 @@
 package ch.ethz.inf.vs.a1.yedavid.antitheft;
 
 import android.app.IntentService;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.Context;
+import android.graphics.Color;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -11,7 +14,7 @@ import android.content.Context;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-public class AntiTheftService extends IntentService {
+public class AntiTheftService extends IntentService implements AlarmCallback {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_FOO = "ch.ethz.inf.vs.a1.yedavid.antitheft.action.FOO";
@@ -20,6 +23,8 @@ public class AntiTheftService extends IntentService {
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "ch.ethz.inf.vs.a1.yedavid.antitheft.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "ch.ethz.inf.vs.a1.yedavid.antitheft.extra.PARAM2";
+
+    private static boolean alarmActive = false;
 
     public AntiTheftService() {
         super("AntiTheftService");
@@ -32,6 +37,19 @@ public class AntiTheftService extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
+
+    @Override
+    public void onDelayStarted() {
+
+        System.out.println("\n\nStarting from within nigguh!");
+
+
+
+
+
+    }
+
+
     public static void startActionFoo(Context context, String param1, String param2) {
         Intent intent = new Intent(context, AntiTheftService.class);
         intent.setAction(ACTION_FOO);
@@ -87,5 +105,24 @@ public class AntiTheftService extends IntentService {
     private void handleActionBaz(String param1, String param2) {
         // TODO: Handle action Baz
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //TODO: have some function to actually stop what onDelayStarted has started
+        boolean alarmIsActive = intent.getBooleanExtra("startService", false); //does this now actually get true or false?
+        alarmActive = alarmIsActive;
+
+        if (alarmIsActive) {
+            onDelayStarted();
+        } else {
+            //TODO: Some function to reverse the actions of the other shit
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

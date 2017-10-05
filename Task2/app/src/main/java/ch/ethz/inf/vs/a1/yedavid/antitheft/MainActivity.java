@@ -13,6 +13,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     public static boolean alarmIsActive = false;
+    private Intent antiTheftServiceIntent;
 
 
     @Override
@@ -35,13 +36,24 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 alarmIsActive = ! alarmIsActive;
-                System.out.println("Alarm state is " + alarmIsActive);
-                System.out.println("Toggle Alarm!");
+                //System.out.println("Alarm state is " + alarmIsActive);
+                //System.out.println("Toggle Alarm!");
+
+                if (alarmIsActive) {
+                    System.out.println("Starting service AntiTheftService..");
+                    antiTheftServiceIntent.putExtra("startService", alarmIsActive);
+                    startService(antiTheftServiceIntent);
+                } else {
+                    System.out.println("Stopping service AntiTheftService..");
+                    antiTheftServiceIntent.putExtra("startService", alarmIsActive);
+                    startService(antiTheftServiceIntent);
+                }
+
             }
         });
 
-        Intent serviceIntent = new Intent(this, AntiTheftService.class);
-        startService(serviceIntent);
+        antiTheftServiceIntent = new Intent(this, AntiTheftService.class);
+
     }
 
     @Override
