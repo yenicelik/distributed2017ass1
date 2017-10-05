@@ -26,6 +26,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
     private static final String EXTRA_PARAM2 = "ch.ethz.inf.vs.a1.yedavid.antitheft.extra.PARAM2";
 
     private static boolean alarmActive = false;
+    private static NotificationManager notificationManager;
 
     public AntiTheftService() {
         super("AntiTheftService");
@@ -45,7 +46,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         System.out.println("\n\nStarting from within nigguh!");
 
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context
+        notificationManager = (NotificationManager) getSystemService(Context
                 .NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -56,6 +57,11 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
 
         notificationManager.notify(1000, notificationBuilder.build());
 
+    }
+
+    public void clearNotifications() {
+        //TODO: remove notification stuff
+        notificationManager.cancelAll();
     }
 
 
@@ -125,7 +131,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         if (alarmIsActive) {
             onDelayStarted();
         } else {
-            //TODO: Some function to reverse the actions of the other shit
+            clearNotifications();
         }
         return super.onStartCommand(intent, flags, startId);
     }
