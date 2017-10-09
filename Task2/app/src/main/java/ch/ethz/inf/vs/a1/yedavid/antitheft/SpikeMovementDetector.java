@@ -12,8 +12,6 @@ import android.util.FloatMath;
 
 public class SpikeMovementDetector extends AbstractMovementDetector {
 
-    public static boolean triggered = false;
-
     public SpikeMovementDetector(AlarmCallback callback, int sensitivity) {
         super(callback, sensitivity);
     }
@@ -21,15 +19,12 @@ public class SpikeMovementDetector extends AbstractMovementDetector {
 
     @Override
     public boolean doAlarmLogic(float[] values) {
-//        float sum = 0;
-//        for (float ele : values) {
-//            sum += ele;
-//        }
-//
-//        this.triggered = sum < sensitivity;
-//        return this.triggered;
-        return true;
+        float sum = 0;
+        for (float ele : values) {
+            sum += ele;
+        }
 
+        return sum > sensitivity;
     }
 
 

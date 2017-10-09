@@ -1,16 +1,9 @@
 package ch.ethz.inf.vs.a1.yedavid.antitheft;
 
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.FloatMath;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,30 +13,18 @@ public class MainActivity extends AppCompatActivity{
     public static boolean alarmIsActive = false;
     private Intent antiTheftServiceIntent;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        antiTheftServiceIntent = new Intent(this, AntiTheftService.class);
 
         final View button = findViewById(R.id.toggleAlarmButton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 alarmIsActive = ! alarmIsActive;
-                //System.out.println("Alarm state is " + alarmIsActive);
-                //System.out.println("Toggle Alarm!");
 
                 if (alarmIsActive) {
                     System.out.println("Starting service AntiTheftService..");
@@ -52,15 +33,10 @@ public class MainActivity extends AppCompatActivity{
                 } else {
                     System.out.println("Stopping service AntiTheftService..");
                     antiTheftServiceIntent.putExtra("startService", alarmIsActive);
-                    startService(antiTheftServiceIntent);
+                    stopService(antiTheftServiceIntent);
                 }
-
             }
         });
-
-        //Setting up the services
-        antiTheftServiceIntent = new Intent(this, AntiTheftService.class);
-
     }
 
     @Override
@@ -80,7 +56,6 @@ public class MainActivity extends AppCompatActivity{
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             System.out.println("(Adjective) Settings selected");
-
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
 

@@ -18,152 +18,69 @@ import android.os.Vibrator;
  * helper methods.
  */
 public class AntiTheftService extends IntentService implements AlarmCallback {
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = "ch.ethz.inf.vs.a1.yedavid.antitheft.action.FOO";
-    private static final String ACTION_BAZ = "ch.ethz.inf.vs.a1.yedavid.antitheft.action.BAZ";
-
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "ch.ethz.inf.vs.a1.yedavid.antitheft.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "ch.ethz.inf.vs.a1.yedavid.antitheft.extra.PARAM2";
 
     private static boolean alarmActive = false;
     private NotificationManager notificationManager;
     private SensorManager sensorManager;
     private SpikeMovementDetector spikeMovementDetector;
     private Sensor sensor;
+    private NotificationCompat.Builder notificationBuilder;
 
     public AntiTheftService() {
         super("AntiTheftService");
     }
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-
     @Override
     public void onDelayStarted() {
-
-        System.out.println("\n\nStarting from within nigguh!");
-
-
-        notificationManager = (NotificationManager) getSystemService(Context
-                .NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+        System.out.println("\n\n\n\n\n\nCalling onDelayStarted \n\n\n\n\n\n");
+        notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_info_black_24dp)
                 .setContentTitle("I am a notification")
                 .setContentText("Above is a notification")
                 .setOngoing(true);
-
         notificationManager.notify(1000, notificationBuilder.build());
-
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         //Different behavior when the phone is connected vs not
         try {
-            v.vibrate(10000); //TODO: possibly repeat this in a time-interval if it's needed to conitnuously vibrate
+            v.vibrate(500); //TODO: possibly repeat this in a time-interval if it's needed to conitnuously vibrate
         } catch (Exception e) {
             System.out.println("Brbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbr");
             System.out.println(e);
-
         }
-
-
-    }
-
-    public void clearNotifications() {
-        //TODO: remove notification stuff
-        notificationManager.cancelAll();
-    }
-
-
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, AntiTheftService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, AntiTheftService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
-            }
-        }
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void clearNotifications() {
+        System.out.println("\n\n\n\n\n\nClearing Notifications \n\n\n\n\n\n");
+        notificationManager.cancelAll();
     }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //TODO: have some function to actually stop what onDelayStarted has started
-        boolean alarmIsActive = intent.getBooleanExtra("startService", false); //does this now actually get true or false?
-        alarmActive = alarmIsActive;
+        System.out.println("\n\n\n\n\n\nStarting the fucking command \n\n\n\n\n\n");
 
-        if (alarmIsActive) {
-            //Setting up the sensors; Catch if not actual phone is used
-            sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-            spikeMovementDetector = new SpikeMovementDetector(this, 5);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        spikeMovementDetector = new SpikeMovementDetector(this, 1);
+        alarmActive = intent.getBooleanExtra("startService", true); //does this now actually get true or false?
 
-            System.out.println("Nigguh111");
+        if (alarmActive) {
             sensorManager.registerListener(spikeMovementDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            System.out.println("Nigguh222");
-
         } else {
             clearNotifications();
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        System.out.println("\n\n\n\n\n\nDestroying shit \n\n\n\n\n\n");
         sensorManager.unregisterListener(spikeMovementDetector, sensor);
+        super.onDestroy();
     }
 }
