@@ -1,12 +1,14 @@
 package ch.ethz.inf.vs.a1.yedavid.antitheft;
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.Context;
-import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.support.v4.app.NotificationCompat;
+
+import android.os.Vibrator;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -26,7 +28,10 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
     private static final String EXTRA_PARAM2 = "ch.ethz.inf.vs.a1.yedavid.antitheft.extra.PARAM2";
 
     private static boolean alarmActive = false;
-    private static NotificationManager notificationManager;
+    private NotificationManager notificationManager;
+    private SensorManager sensorManager;
+    private SpikeMovementDetector spikeMovementDetector;
+    private Sensor sensor;
 
     public AntiTheftService() {
         super("AntiTheftService");
@@ -56,6 +61,17 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
                 .setOngoing(true);
 
         notificationManager.notify(1000, notificationBuilder.build());
+
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        //Different behavior when the phone is connected vs not
+        try {
+            v.vibrate(10000); //TODO: possibly repeat this in a time-interval if it's needed to conitnuously vibrate
+        } catch (Exception e) {
+            System.out.println("Brbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbr");
+            System.out.println(e);
+
+        }
+
 
     }
 
@@ -122,6 +138,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //TODO: have some function to actually stop what onDelayStarted has started
@@ -129,7 +146,15 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         alarmActive = alarmIsActive;
 
         if (alarmIsActive) {
-            onDelayStarted();
+            //Setting up the sensors; Catch if not actual phone is used
+            sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+            spikeMovementDetector = new SpikeMovementDetector(this, 5);
+
+            System.out.println("Nigguh111");
+            sensorManager.registerListener(spikeMovementDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            System.out.println("Nigguh222");
+
         } else {
             clearNotifications();
         }
@@ -139,5 +164,6 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        sensorManager.unregisterListener(spikeMovementDetector, sensor);
     }
 }
