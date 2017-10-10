@@ -22,9 +22,13 @@ public class SpikeMovementDetector extends AbstractMovementDetector {
         float sum = 0;
         for (float ele : values) {
             sum += ele;
+
+            if (Math.abs(sum) >= sensitivity) {
+                return true;
+            }
         }
 
-        return sum > sensitivity;
+        return false;
     }
 
 
