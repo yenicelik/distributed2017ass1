@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -22,22 +24,24 @@ public class MainActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         antiTheftServiceIntent = new Intent(this, AntiTheftService.class);
 
-        final View button = findViewById(R.id.toggleAlarmButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                alarmIsActive = ! alarmIsActive;
+        final ToggleButton button = (ToggleButton) findViewById(R.id.toggleAlarmButton);
+        button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+          @Override
+          public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+              alarmIsActive = ! alarmIsActive;
 
-                if (alarmIsActive) {
-                    System.out.println("Starting service AntiTheftService..");
-                    antiTheftServiceIntent.putExtra("startService", alarmIsActive);
-                    startService(antiTheftServiceIntent);
-                } else {
-                    System.out.println("Stopping service AntiTheftService..");
-                    antiTheftServiceIntent.putExtra("startService", alarmIsActive);
-                    stopService(antiTheftServiceIntent);
-                }
-            }
-        });
+              if (alarmIsActive) {
+                  System.out.println("Starting service AntiTheftService..");
+                  antiTheftServiceIntent.putExtra("startService", alarmIsActive);
+                  startService(antiTheftServiceIntent);
+              } else {
+                  System.out.println("Stopping service AntiTheftService..");
+                  antiTheftServiceIntent.putExtra("startService", alarmIsActive);
+                  stopService(antiTheftServiceIntent);
+              }
+          }
+      }
+        );
     }
 
     @Override

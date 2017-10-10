@@ -8,7 +8,7 @@
     tools:context="ch.ethz.inf.vs.a1.yedavid.antitheft.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <Button
+    <ToggleButton
         android:id="@+id/toggleAlarmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Hello!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

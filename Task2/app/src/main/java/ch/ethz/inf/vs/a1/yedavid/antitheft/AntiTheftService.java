@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.os.Vibrator;
 
 import java.util.concurrent.TimeUnit;
+import android.os.Handler;
 
 import static java.lang.reflect.Array.getInt;
 
@@ -42,29 +43,34 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         int delay = Integer.parseInt(sharedPreferences.getString("time_interval", "10"));
 
-        try {
-            TimeUnit.SECONDS.sleep(delay);
-        } catch (InterruptedException e) {
-            System.out.println("Interruped sleep!");
-        }
+        final Context context = this;
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            public void run() {
+
+                System.out.println("\n\n\n\n\n\nCalling onDelayStarted \n\n\n\n\n\n");
+                notificationBuilder = new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_info_black_24dp)
+                        .setContentTitle("I am a notification")
+                        .setContentText("Above is a notification")
+                        .setOngoing(true);
+                notificationManager.notify(1000, notificationBuilder.build());
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                //Different behavior when the phone is connected vs not
+                try {
+                    v.vibrate(1000); //TODO: possibly repeat this in a time-interval if it's needed to conitnuously vibrate
+                } catch (Exception e) {
+                    System.out.println("Brbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbr");
+                    System.out.println(e);
+                }
+            }
+        };
+
+        handler.postDelayed(runnable, delay * 1000);
 
 
-        System.out.println("\n\n\n\n\n\nCalling onDelayStarted \n\n\n\n\n\n");
-        notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_info_black_24dp)
-                .setContentTitle("I am a notification")
-                .setContentText("Above is a notification")
-                .setOngoing(true);
-        notificationManager.notify(1000, notificationBuilder.build());
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        //Different behavior when the phone is connected vs not
-        try {
-            v.vibrate(500); //TODO: possibly repeat this in a time-interval if it's needed to conitnuously vibrate
-        } catch (Exception e) {
-            System.out.println("Brbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbr");
-            System.out.println(e);
-        }
     }
 
     @Override
@@ -108,6 +114,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
     @Override
     public void onDestroy() {
         System.out.println("\n\n\n\n\n\nDestroying shit \n\n\n\n\n\n");
+        clearNotifications();
         sensorManager.unregisterListener(spikeMovementDetector, sensor);
         super.onDestroy();
     }
