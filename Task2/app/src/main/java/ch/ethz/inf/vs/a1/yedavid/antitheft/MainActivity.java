@@ -2,6 +2,7 @@ package ch.ethz.inf.vs.a1.yedavid.antitheft;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
+    private void openSettings(Fragment fragment) {
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -56,8 +61,11 @@ public class MainActivity extends AppCompatActivity{
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             System.out.println("(Adjective) Settings selected");
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            startActivity(intent);
+
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new SettingsFragment())
+                    .addToBackStack(null)
+                    .commit();
 
             return true;
         }
