@@ -3,23 +3,23 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
 
-    <string name="pref_sensorType">Settings</string>
+    <string name="pref_sensorType">Sensor Type</string>
     <string-array name="pref_sensorTypes_entries">
-        <item>Item 1</item>
-        <item>Item 2</item>
+        <item>Linear</item>
+        <item>Gravity</item>
     </string-array>
     <string-array name="pref_sensorTypes_values">
-        <item>Item 1</item>
-        <item>Item 2</item>
+        <item>Linear</item>
+        <item>MotionDetect</item>
     </string-array>
-    <string name="pref_sensorTypes_default">Settings</string>
+    <string name="pref_sensorTypes_default">Linear</string>
 
     <string name="time_interval">Time before set-off</string>
     <string name="time_interval_summary">Time before set-off</string>
-    <integer name="time_interval_default">3</integer>
+    <string name="time_interval_default">3</string>
 
     <string name="sensitivity">Sensitivity</string>
     <string name="sensitivity_summary">Sensitivity</string>
-    <integer name="sensitivity_default">5</integer>
+    <string name="sensitivity_default">5</string>
 
 </resources>

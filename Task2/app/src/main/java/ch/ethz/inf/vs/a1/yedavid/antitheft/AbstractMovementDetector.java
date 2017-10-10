@@ -27,6 +27,13 @@ public abstract class AbstractMovementDetector implements SensorEventListener {
                 callback.onDelayStarted();
             }
         }
+        if (event.sensor.getType() == Sensor.TYPE_MOTION_DETECT) {
+            // Copy values because the event is not owned by the application
+            float[] values = event.values.clone();
+            if(doAlarmLogic(values)){
+                callback.onDelayStarted();
+            }
+        }
     }
 
     @Override

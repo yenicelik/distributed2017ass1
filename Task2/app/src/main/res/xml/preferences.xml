@@ -5,14 +5,14 @@
             android:key="time_interval"
             android:title="@string/time_interval"
             android:summary="@string/time_interval_summary"
-            android:defaultValue="@integer/time_interval_default"
+            android:defaultValue="@string/time_interval_default"
             />
 
         <EditTextPreference
             android:key="sensitivity"
             android:title="@string/sensitivity"
             android:summary="@string/sensitivity_summary"
-            android:defaultValue="@integer/sensitivity_default"
+            android:defaultValue="@string/sensitivity_default"
             />
 
         <ListPreference

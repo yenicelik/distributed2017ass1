@@ -4,11 +4,17 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import android.os.Vibrator;
+
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.reflect.Array.getInt;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -32,6 +38,17 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
 
     @Override
     public void onDelayStarted() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int delay = Integer.parseInt(sharedPreferences.getString("time_interval", "10"));
+
+        try {
+            TimeUnit.SECONDS.sleep(delay);
+        } catch (InterruptedException e) {
+            System.out.println("Interruped sleep!");
+        }
+
+
         System.out.println("\n\n\n\n\n\nCalling onDelayStarted \n\n\n\n\n\n");
         notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_info_black_24dp)
@@ -65,9 +82,20 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        spikeMovementDetector = new SpikeMovementDetector(this, 1);
-        alarmActive = intent.getBooleanExtra("startService", true); //does this now actually get true or false?
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sensorType = sharedPreferences.getString("pref_sensorType", "Linear");
+        int sensitivity = Integer.parseInt(sharedPreferences.getString("sensitivity", "1"));
+
+
+        if (sensorType.equals("Linear")) {
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        } else {
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_MOTION_DETECT);
+        }
+
+        spikeMovementDetector = new SpikeMovementDetector(this, sensitivity);
+        alarmActive = intent.getBooleanExtra("startService", true);
 
         if (alarmActive) {
             sensorManager.registerListener(spikeMovementDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL);
