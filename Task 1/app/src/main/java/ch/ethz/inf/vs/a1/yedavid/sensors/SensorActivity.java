@@ -1,6 +1,7 @@
 package ch.ethz.inf.vs.a1.yedavid.sensors;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,7 +22,10 @@ import com.jjoe64.graphview.series.Series;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SensorActivity extends AppCompatActivity implements SensorEventListener, GraphContainer {
 
@@ -71,9 +75,21 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             dataPoints[i] = new ArrayList<>();
         }
 
+        final int[] colors = new int[]{
+                Color.RED,
+                Color.GREEN,
+                Color.BLUE,
+                Color.CYAN,
+                Color.YELLOW,
+                Color.MAGENTA,
+                Color.BLACK,
+                Color.GRAY,
+        };
+
         for (int i = 0; i < numValues; i++) {
             PointsGraphSeries series = new PointsGraphSeries();
             series.setColor(Integer.MIN_VALUE / 4 + (Integer.MIN_VALUE / 2) / numValues * i);
+            series.setColor(colors[i % colors.length]);
             graph.addSeries(series);
 
         }
@@ -136,10 +152,31 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     public void addValues(double xIndex, float[] values) throws IllegalArgumentException {
         List<Series> series = graph.getSeries();
         for (int i = 0; i < numValues; i++) {
-            PointsGraphSeries lineGraph = (PointsGraphSeries) series.get(i);
-            DataPoint dataPoint = new DataPoint(xIndex, values[i]);
+            final PointsGraphSeries lineGraph = (PointsGraphSeries) series.get(i);
+            final DataPoint dataPoint = new DataPoint(xIndex, values[i]);
+            final AtomicBoolean done = new AtomicBoolean(false);
+
             dataPoints[i].add(dataPoint);
-            lineGraph.appendData(dataPoint, false, 100);
+            Runnable task = new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (this) {
+                        lineGraph.appendData(dataPoint, false, 100);
+                        done.set(true);
+                        this.notify();
+                    }
+                }
+            };
+            runOnUiThread(task);
+            try {
+                synchronized (task) {
+                    while (!done.get()) {
+                        task.wait();
+                    }
+                }
+            } catch (Exception e) {
+
+            }
         }
     }
 
