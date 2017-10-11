@@ -1,12 +1,9 @@
-package ch.ethz.inf.vs.a1.nethz.sensors;
+package ch.ethz.inf.vs.a1.yedavid.sensors;
 
 import android.hardware.Sensor;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import ch.ethz.inf.vs.a1.nethz.sensors.SensorTypes;
-import ch.ethz.inf.vs.a1.nethz.sensors.SensorTypesImpl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,7 +16,7 @@ public class UnitStringsTest {
 
     @Before
     public void setupBeforeClass(){
-        mSensorTypes = new SensorTypesImpl();
+        mSensorTypes = new SensorHelper();
     }
 
     @Test

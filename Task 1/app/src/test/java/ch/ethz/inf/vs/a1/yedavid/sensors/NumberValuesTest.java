@@ -1,12 +1,10 @@
-package ch.ethz.inf.vs.a1.nethz.sensors;
+package ch.ethz.inf.vs.a1.yedavid.sensors;
 
 import android.hardware.Sensor;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.ethz.inf.vs.a1.nethz.sensors.SensorTypes;
-import ch.ethz.inf.vs.a1.nethz.sensors.SensorTypesImpl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,7 +14,7 @@ public class NumberValuesTest {
 
     @Before
     public void setupBeforeClass(){
-        mSensorTypes = new SensorTypesImpl();
+        mSensorTypes = new SensorHelper();
     }
 
     @Test
@@ -66,6 +64,6 @@ public class NumberValuesTest {
 
     @Test
     public void RotationVectorTest() throws Exception {
-        assertEquals(mSensorTypes.getNumberValues(Sensor.TYPE_ROTATION_VECTOR), 3);
+        assertEquals(mSensorTypes.getNumberValues(Sensor.TYPE_ROTATION_VECTOR), 5);
     }
 }
