@@ -32,6 +32,8 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
     private SpikeMovementDetector spikeMovementDetector;
     private Sensor sensor;
     private NotificationCompat.Builder notificationBuilder;
+    private Runnable mRunnable = null;
+    private Handler handler = new Handler();
 
     public AntiTheftService() {
         super("AntiTheftService");
@@ -44,8 +46,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         int delay = Integer.parseInt(sharedPreferences.getString("time_interval", "10"));
 
         final Context context = this;
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
+        mRunnable = new Runnable() {
             public void run() {
 
                 System.out.println("\n\n\n\n\n\nCalling onDelayStarted \n\n\n\n\n\n");
@@ -66,11 +67,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
                 }
             }
         };
-
-        handler.postDelayed(runnable, delay * 1000);
-
-
-
+        handler.postDelayed(mRunnable, delay * 1000);
     }
 
     @Override
@@ -93,7 +90,6 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         String sensorType = sharedPreferences.getString("pref_sensorType", "Linear");
         int sensitivity = Integer.parseInt(sharedPreferences.getString("sensitivity", "1"));
 
-
         if (sensorType.equals("Linear")) {
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         } else {
@@ -108,12 +104,18 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
         } else {
             clearNotifications();
         }
+
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         System.out.println("\n\n\n\n\n\nDestroying shit \n\n\n\n\n\n");
+
+        if (mRunnable != null) {
+            handler.removeCallbacks(mRunnable);
+        }
+
         clearNotifications();
         sensorManager.unregisterListener(spikeMovementDetector, sensor);
         super.onDestroy();

@@ -16,7 +16,7 @@
 
     <string name="time_interval">Time before set-off</string>
     <string name="time_interval_summary">Time before set-off</string>
-    <string name="time_interval_default">3</string>
+    <string name="time_interval_default">2</string>
 
     <string name="sensitivity">Sensitivity</string>
     <string name="sensitivity_summary">Sensitivity</string>
