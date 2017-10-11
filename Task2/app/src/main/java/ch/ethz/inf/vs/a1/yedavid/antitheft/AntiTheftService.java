@@ -81,7 +81,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println("\n\n\n\n\n\nStarting the fucking command \n\n\n\n\n\n");
+        System.out.println("\n\n\n\n\n\nStarting the command \n\n\n\n\n\n");
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -110,7 +110,7 @@ public class AntiTheftService extends IntentService implements AlarmCallback {
 
     @Override
     public void onDestroy() {
-        System.out.println("\n\n\n\n\n\nDestroying shit \n\n\n\n\n\n");
+        System.out.println("\n\n\n\n\n\nDestroying\n\n\n\n\n\n");
 
         if (mRunnable != null) {
             handler.removeCallbacks(mRunnable);
