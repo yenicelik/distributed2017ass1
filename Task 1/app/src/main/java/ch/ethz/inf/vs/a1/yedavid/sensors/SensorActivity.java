@@ -109,7 +109,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(sensorType);
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         sensorName.setText(sensor.getName());
     }
