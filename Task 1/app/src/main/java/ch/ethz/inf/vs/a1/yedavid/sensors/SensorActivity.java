@@ -22,6 +22,7 @@ import com.jjoe64.graphview.series.Series;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -151,32 +152,34 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void addValues(double xIndex, float[] values) throws IllegalArgumentException {
         List<Series> series = graph.getSeries();
+        final Object monitor = new Object();
+        final AtomicInteger counter = new AtomicInteger(numValues);
         for (int i = 0; i < numValues; i++) {
             final PointsGraphSeries lineGraph = (PointsGraphSeries) series.get(i);
             final DataPoint dataPoint = new DataPoint(xIndex, values[i]);
-            final AtomicBoolean done = new AtomicBoolean(false);
 
             dataPoints[i].add(dataPoint);
             Runnable task = new Runnable() {
                 @Override
                 public void run() {
-                    synchronized (this) {
+                    synchronized (monitor) {
                         lineGraph.appendData(dataPoint, false, 100);
-                        done.set(true);
-                        this.notify();
+                        monitor.notify();
                     }
                 }
             };
             runOnUiThread(task);
-            try {
-                synchronized (task) {
-                    while (!done.get()) {
-                        task.wait();
-                    }
-                }
-            } catch (Exception e) {
 
+        }
+
+        try {
+            synchronized (monitor) {
+                while (counter.get() != 0) {
+                    monitor.wait();
+                }
             }
+        } catch (Exception e) {
+
         }
     }
 
