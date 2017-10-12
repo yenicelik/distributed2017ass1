@@ -164,12 +164,12 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                 public void run() {
                     synchronized (monitor) {
                         lineGraph.appendData(dataPoint, false, 100);
+                        counter.decrementAndGet();
                         monitor.notify();
                     }
                 }
             };
             runOnUiThread(task);
-
         }
 
         try {
